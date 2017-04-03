@@ -9,7 +9,7 @@
         "https://mail.google.com/*",
         "https://inbox.google.com/*"
       ],
-      "js": ["inboxsdk.js","content.js","js/keystore.js","js/openpgp.min.js"],
+      "js": ["inboxsdk.js","content.js","js/keyhelper.js","js/openpgp.min.js"],
       "run_at": "document_end"
     }
   ],
@@ -17,13 +17,12 @@
     "activeTab",
     "storage",
     "https://mail.google.com/",
-    "https://inbox.google.com/",
-    "https://raw.githubusercontent.com/openpgpjs/openpgpjs/master/dist/openpgp.worker.min.js"
+    "https://inbox.google.com/"
   ],
   "background": {
     "page": "background.html",
     "persistent": true
   },
   "manifest_version": 2,
-  "web_accessible_resources": ["icons/insert.png","js/openpgp.worker.min.js"]
+  "web_accessible_resources": ["icons/insert.png","icons/lock.png","icons/unlock.png", "icons/plus.png","js/openpgp.worker.min.js"]
 }

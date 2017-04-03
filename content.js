@@ -1,12 +1,17 @@
 InboxSDK.load('1.0', 'sdk_secure-mail_47311eefae').then(function (sdk) {
+    var decryptImgUrl = chrome.extension.getURL("icons/unlock.png");
+    var addKeyImgUrl = chrome.extension.getURL("icons/plus.png");
 
     // the SDK has been loaded, now do something with it!
     sdk.Compose.registerComposeViewHandler(function (composeView) {
 
+
+        var encryptImgUrl = chrome.extension.getURL("icons/lock.png");
+
         // a compose view has come into existence, do something with it!
         composeView.addButton({
             title: "Encrypt this message",
-            iconUrl: 'https://lh5.googleusercontent.com/itq66nh65lfCick8cJ-OPuqZ8OUDTIxjCc25dkc4WUT1JG8XG3z6-eboCu63_uDXSqMnLRdlvQ=s128-h128-e365',
+            iconUrl: encryptImgUrl,
             onClick: function (event) {
                 var currentText = event.composeView.getTextContent();
                 var recipients = event.composeView.getToRecipients();
@@ -26,7 +31,6 @@ InboxSDK.load('1.0', 'sdk_secure-mail_47311eefae').then(function (sdk) {
                         passPhrase: passphrase
                     },
                     function (response) {
-                    console.log(response);
                         if(response.type == 'ciphertext'){
                             var res = response.content;
                             event.composeView.setBodyHTML(res);
@@ -46,15 +50,18 @@ InboxSDK.load('1.0', 'sdk_secure-mail_47311eefae').then(function (sdk) {
             iconUrl: insertImgUrl,
             onClick: function (event) {
 
-                chrome.storage.sync.get("publicKey", function (items) {
-                    var publicKey = (items.publicKey);
+                chrome.runtime.sendMessage({
+                        type: 'getPublicKey',
+                    },
+                    function (response) {
+                        if(response.type == 'publicKey'){
+                            var publicKey = response.content;
+                            event.composeView.insertTextIntoBodyAtCursor(publicKey);
 
-                    if (publicKey) {
-                        event.composeView.insertTextIntoBodyAtCursor(publicKey);
-                    } else {
-                        alert("You do not have a keypair yet, set one in the options page");
-                    }
-                });
+                        } else if(response.type == 'error'){
+                            alert(response.content);
+                        }
+                    });
 
 
             }
@@ -87,8 +94,8 @@ InboxSDK.load('1.0', 'sdk_secure-mail_47311eefae').then(function (sdk) {
                 title: "Store Public Key",
                 description: "Add public key for " + senderEmail + " to your secure messsaging group",
                 previewUrl: "",
-                previewThumbnailUrl: 'https://lh5.googleusercontent.com/itq66nh65lfCick8cJ-OPuqZ8OUDTIxjCc25dkc4WUT1JG8XG3z6-eboCu63_uDXSqMnLRdlvQ=s128-h128-e365',
-                failoverPreviewIconUrl: 'https://lh5.googleusercontent.com/itq66nh65lfCick8cJ-OPuqZ8OUDTIxjCc25dkc4WUT1JG8XG3z6-eboCu63_uDXSqMnLRdlvQ=s128-h128-e365',
+                previewThumbnailUrl: addKeyImgUrl,
+                failoverPreviewIconUrl: addKeyImgUrl,
                 previewOnClick: function (attachmentCardView) {
                     attachmentCardView.preventDefault();
 
@@ -105,9 +112,9 @@ InboxSDK.load('1.0', 'sdk_secure-mail_47311eefae').then(function (sdk) {
                             }
                         });
                 },
-                fileIconImageUrl: 'https://lh5.googleusercontent.com/itq66nh65lfCick8cJ-OPuqZ8OUDTIxjCc25dkc4WUT1JG8XG3z6-eboCu63_uDXSqMnLRdlvQ=s128-h128-e365',
+                fileIconImageUrl: addKeyImgUrl,
                 buttons: [{
-                    iconUrl: 'https://lh5.googleusercontent.com/itq66nh65lfCick8cJ-OPuqZ8OUDTIxjCc25dkc4WUT1JG8XG3z6-eboCu63_uDXSqMnLRdlvQ=s128-h128-e365',
+                    iconUrl: addKeyImgUrl,
                     tooltip: "Action from button",
                     onClick: function (attachmentCardClickEvent) {
                         var storeObj = {};
@@ -125,8 +132,8 @@ InboxSDK.load('1.0', 'sdk_secure-mail_47311eefae').then(function (sdk) {
                 title: "Decrypt Message",
                 description: "Decrypt this message",
                 previewUrl: "",
-                previewThumbnailUrl: 'https://lh5.googleusercontent.com/itq66nh65lfCick8cJ-OPuqZ8OUDTIxjCc25dkc4WUT1JG8XG3z6-eboCu63_uDXSqMnLRdlvQ=s128-h128-e365',
-                failoverPreviewIconUrl: 'https://lh5.googleusercontent.com/itq66nh65lfCick8cJ-OPuqZ8OUDTIxjCc25dkc4WUT1JG8XG3z6-eboCu63_uDXSqMnLRdlvQ=s128-h128-e365',
+                previewThumbnailUrl: decryptImgUrl,
+                failoverPreviewIconUrl: decryptImgUrl,
                 previewOnClick: function (attachmentCardView) {
                     attachmentCardView.preventDefault();
                     var passphrase = prompt("Please enter your passphrase:");
@@ -149,9 +156,9 @@ InboxSDK.load('1.0', 'sdk_secure-mail_47311eefae').then(function (sdk) {
 
 
                 },
-                fileIconImageUrl: 'https://lh5.googleusercontent.com/itq66nh65lfCick8cJ-OPuqZ8OUDTIxjCc25dkc4WUT1JG8XG3z6-eboCu63_uDXSqMnLRdlvQ=s128-h128-e365',
+                fileIconImageUrl: decryptImgUrl,
                 buttons: [{
-                    iconUrl: 'https://lh5.googleusercontent.com/itq66nh65lfCick8cJ-OPuqZ8OUDTIxjCc25dkc4WUT1JG8XG3z6-eboCu63_uDXSqMnLRdlvQ=s128-h128-e365',
+                    iconUrl: decryptImgUrl,
                     tooltip: "Action from button",
                     onClick: function (attachmentCardClickEvent) {
 

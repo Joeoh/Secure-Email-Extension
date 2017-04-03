@@ -89,6 +89,20 @@ chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
         });
     }
 
+
+    if(msg.type == 'getPublicKey'){
+
+        chrome.storage.sync.get("publicKey", function (items) {
+            var publicKey = (items.publicKey);
+
+            if (publicKey) {
+                sendResponse({type:"publicKey",content:publicKey});
+            } else {
+                sendResponse({type:"error", message:"You do not have a keypair yet, set one in the options page"});
+            }
+        });
+    }
+
     //Return async
     return true;
 });

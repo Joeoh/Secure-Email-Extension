@@ -1,30 +1,3 @@
-function getKeyForEmail(email){
-    var res;
-    var storeObj = {};
-    storeObj[email];
-    chrome.storage.sync.get(storeObj, function(items) {
-
-        if(items.email){
-            res = items.email;
-        }
-
-    });
-
-    return res;
-}
-
-
-function getPublicKey(){
-    var res;
-    chrome.storage.sync.get("publicKey", function(items) {
-        res =  (items.publicKey);
-    });
-
-    return res;
-}
-
-
-
 /*
 * From PHP.js
 * */
