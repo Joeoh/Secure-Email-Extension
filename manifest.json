@@ -1,0 +1,29 @@
+{
+  "name": "Secure Email Extension",
+  "description": "Example extension showing use of the Streak Gmail SDK",
+  "version": "0.1",
+  "options_page": "options.html",
+  "content_scripts": [
+    {
+      "matches": [
+        "https://mail.google.com/*",
+        "https://inbox.google.com/*"
+      ],
+      "js": ["inboxsdk.js","content.js","js/keystore.js","js/openpgp.min.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "permissions": [
+    "activeTab",
+    "storage",
+    "https://mail.google.com/",
+    "https://inbox.google.com/",
+    "https://raw.githubusercontent.com/openpgpjs/openpgpjs/master/dist/openpgp.worker.min.js"
+  ],
+  "background": {
+    "page": "background.html",
+    "persistent": true
+  },
+  "manifest_version": 2,
+  "web_accessible_resources": ["icons/insert.png","js/openpgp.worker.min.js"]
+}
