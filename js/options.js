@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var publicKey =  (items.publicKey);
 
         if(publicKey){
-            document.getElementById('createKey').innerHTML = "You have a key <br><textarea>"+publicKey+"</textarea>";
+            document.getElementById('createKey').innerHTML = "Your public key: <br><textarea>"+publicKey+"</textarea>";
         } else {
             console.log("No Key");
         }
